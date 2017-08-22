@@ -1,4 +1,6 @@
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+import time
 import unittest
 
 
@@ -15,16 +17,29 @@ class NewVisitorTest(unittest.TestCase):
 
         # He notices to-do lists on its header and title
         self.assertIn('To-Do Lists', self.browser.title)
-        self.fail('Finish the test')
+        header_text = self.browser.find_element_by_tag_name('h1')
+        self.assertIn('To-Do Lists', header_text)
+
         # He´s promptly asked to enter a to-do item
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertEqual(
+            inputbox.get_attribute('placeholder'), 'Enter a to-do item')
 
         # He types "Buy cigarrets" into a text box
+        inputbox.send_keys('Buy cigarrets')
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
 
         # After hitting enter the page lists
         # "1 - Buy cigarrets" as the first item
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertTrue(
+            any(row == '1 - Buy cigarrets' for row in rows))
 
         # A text box is inviting him to enter another item
         # So he types "Search about French Literature"
+        self.fail('Finish the test')
 
         # The list is once again updated with the new item
 
