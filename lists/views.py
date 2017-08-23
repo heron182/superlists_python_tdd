@@ -4,4 +4,4 @@ from django.http import HttpResponse
 
 
 def home_page(request):
-    return HttpResponse(content=b'<html><title>To-Do Lists</title></html>')
+    return render(request, 'home.html')
