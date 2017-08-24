@@ -18,16 +18,17 @@ class HomePageTest(TestCase):
         self.assertIn('New list item', response.content.decode('utf-8'))
 
 class ItemModelTest(TestCase):
-    def can_save_and_retrieve_items(self):
-        first_item = Items()
+    def test_can_save_and_retrieve_items(self):
+        first_item = Item()
         first_item.text = 'The first item created'
         first_item.save()
 
-        second_item = Items()
+        second_item = Item()
         second_item.text = 'The second item created'
         second_item.save()
 
-        saved_items = Items.object.all()
-        self.assertEqual(saved_items, 2)
-        self.assertEqual(first_item.text, 'The first item created')
-        self.assertEqual(second_item.text, 'The seconds item created')
+        saved_items = Item.objects.all()
+        self.assertEqual(saved_items.count(), 2)
+        first_saved_item, second_saved_item = saved_items
+        self.assertEqual(first_saved_item.text, 'The first item created')
+        self.assertEqual(second_saved_item.text, 'The second item created')
