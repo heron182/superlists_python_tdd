@@ -4,4 +4,7 @@ from django.http import HttpResponse
 
 
 def home_page(request):
+    if request.method == 'POST':
+        return render(request, 'home.html',
+                      {'new_list_item': request.POST['item_text']})
     return render(request, 'home.html')
