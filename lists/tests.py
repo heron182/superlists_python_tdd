@@ -15,7 +15,25 @@ class HomePageTest(TestCase):
     def test_home_page_can_handle_POST_request(self):
         response = self.client.post('/',
                                     data={'item_text': 'New list item'})
-        self.assertIn('New list item', response.content.decode('utf-8'))
+        self.assertEqual(Item.objects.count(), 1)
+        list_item = Item.objects.first()
+        self.assertIn('New list item', list_item.text)
+
+    def test_redirect_after_POST_request(self):
+        response = self.client.post('/',
+                        data={'item_text': 'New list item'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['location'], '/')
+
+    def test_dont_save_item_on_GET_request(self):
+        self.client.get('/')
+        self.assertEqual(Item.objects.count(), 0)
+
+    def test_display_multiple_items(self):
+        Item.objects.create(text='First item')
+        Item.objects.create(text='Thats the second item')
+        response = self.client.get('/')
+        self.assertIn('First item', response.content.decode())
 
 class ItemModelTest(TestCase):
     def test_can_save_and_retrieve_items(self):
