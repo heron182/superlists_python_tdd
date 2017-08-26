@@ -93,11 +93,11 @@ class NewVisitorTest(LiveServerTestCase):
 
         # Emmon gets his own unique url
         emmon_list_url = self.browser.current_url
-        self.assertRegex(list_url, '/lists/.+')
+        self.assertRegex(emmon_list_url, '/lists/.+')
         self.assertNotEqual(john_list_url, emmon_list_url)
 
         # Theres no trace of John´s list on the page
-        page_text = self.browser.find_elements_by_tag_name('body').text
+        page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('1 - Buy fruit', page_text)
 
 
