@@ -21,19 +21,14 @@ class HomePageTest(TestCase):
 
     def test_redirect_after_POST_request(self):
         response = self.client.post('/',
-                        data={'item_text': 'New list item'})
+                                    data={'item_text': 'New list item'})
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/')
+        self.assertEqual(response['location'], '/lists/newly-list/')
 
     def test_dont_save_item_on_GET_request(self):
         self.client.get('/')
         self.assertEqual(Item.objects.count(), 0)
 
-    def test_display_multiple_items(self):
-        Item.objects.create(text='First item')
-        Item.objects.create(text='Thats the second item')
-        response = self.client.get('/')
-        self.assertIn('First item', response.content.decode())
 
 class ItemModelTest(TestCase):
     def test_can_save_and_retrieve_items(self):
@@ -50,3 +45,17 @@ class ItemModelTest(TestCase):
         first_saved_item, second_saved_item = saved_items
         self.assertEqual(first_saved_item.text, 'The first item created')
         self.assertEqual(second_saved_item.text, 'The second item created')
+
+
+class ListViewTest(TestCase):
+
+    def test_uses_list_templates(self):
+        response = self.client.get('/lists/newly-list/')
+        self.assertTemplateUsed(response, 'lists.html')
+
+    def test_display_multiple_items(self):
+        Item.objects.create(text='Item one')
+        Item.objects.create(text='Item two')
+        response = self.client.get('/lists/newly-list/')
+        self.assertContains(response, '1 - Item one')
+        self.assertContains(response, '2 - Item two')

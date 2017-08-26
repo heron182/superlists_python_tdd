@@ -72,7 +72,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # He notices his list has a unique url
         john_list_url = self.browser.current_url
-        self.assertRegex(john_list_url, '/list/.+')
+        self.assertRegex(john_list_url, '/lists/.+')
 
         # He goes to sleep
         self.browser.quit()
@@ -82,7 +82,7 @@ class NewVisitorTest(LiveServerTestCase):
         self.browser.get(self.live_server_url)
 
         # Theres no sign of John´s list on Emmon´s list
-        page_text = self.browser.find_elements_by_tag_name('body').text
+        page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('1 - Buy fruit', page_text)
 
         # Emmon types a new item for  it´s list
@@ -93,7 +93,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # Emmon gets his own unique url
         emmon_list_url = self.browser.current_url
-        self.assertRegex(list_url, '/list/.+')
+        self.assertRegex(list_url, '/lists/.+')
         self.assertNotEqual(john_list_url, emmon_list_url)
 
         # Theres no trace of John´s list on the page
