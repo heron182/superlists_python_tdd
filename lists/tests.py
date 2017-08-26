@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import resolve
 from django.http import HttpRequest
 from lists.views import home_page
-from lists.models import Item
+from lists.models import Item, List
 # Create your tests here.
 
 
@@ -12,21 +12,29 @@ class HomePageTest(TestCase):
         self.assertTemplateUsed(response, 'home.html')
 
 
-class ItemModelTest(TestCase):
+class ListItemModelTest(TestCase):
     def test_can_save_and_retrieve_items(self):
+        new_list = List()
+        new_list.save()
+
         first_item = Item()
         first_item.text = 'The first item created'
+        first_item.list = new_list
         first_item.save()
 
         second_item = Item()
         second_item.text = 'The second item created'
+        second_item.list = new_list
         second_item.save()
 
         saved_items = Item.objects.all()
         self.assertEqual(saved_items.count(), 2)
+        self.assertEqual(List.objects.count(), 1)
         first_saved_item, second_saved_item = saved_items
         self.assertEqual(first_saved_item.text, 'The first item created')
+        self.assertEqual(first_saved_item.list, new_list)
         self.assertEqual(second_saved_item.text, 'The second item created')
+        self.assertEqual(second_saved_item.list, new_list)
 
 
 class ListViewTest(TestCase):
@@ -36,8 +44,9 @@ class ListViewTest(TestCase):
         self.assertTemplateUsed(response, 'lists.html')
 
     def test_display_multiple_items(self):
-        Item.objects.create(text='Item one')
-        Item.objects.create(text='Item two')
+        new_list = List.objects.create()
+        Item.objects.create(text='Item one', list=new_list)
+        Item.objects.create(text='Item two', list=new_list)
         response = self.client.get('/lists/newly-list/')
         self.assertContains(response, '1 - Item one')
         self.assertContains(response, '2 - Item two')
