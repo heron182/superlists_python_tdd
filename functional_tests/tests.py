@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import WebDriverException
 from django.test import LiveServerTestCase
 import time
 import unittest
@@ -12,10 +13,19 @@ class NewVisitorTest(LiveServerTestCase):
     def tearDown(self):
         self.browser.quit()
 
-    def check_for_row_in_table(self, row_text):
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn(row_text, [row.text for row in rows])
+    def wait_for_row_in_table(self, row_text):
+        MAX_WAIT = 10
+        start = time.time()
+        while True:
+            try:
+                table = self.browser.find_element_by_id('id_list_table')
+                rows = table.find_elements_by_tag_name('tr')
+                self.assertIn(row_text, [row.text for row in rows])
+                return
+            except(AssertionError, WebDriverException) as e:
+                if time.time() - start > MAX_WAIT:
+                    raise e
+                time.sleep(0.5)
 
     def test_can_create_a_list_and_retrieve_it(self):
         # John hears about the website and go check it up
@@ -34,22 +44,21 @@ class NewVisitorTest(LiveServerTestCase):
         # He types "Buy cigarrets" into a text box
         inputbox.send_keys('Buy cigarrets')
         inputbox.send_keys(Keys.ENTER)
-        time.sleep(1)
 
         # After hitting enter the page lists
         # "1 - Buy cigarrets" as the first item
-        self.check_for_row_in_table('1 - Buy cigarrets')
+        self.wait_for_row_in_table('1 - Buy cigarrets')
 
         # A text box is inviting him to enter another item
         # So he types "Search about French Literature"
         inputbox = self.browser.find_element_by_id('id_new_item')
         inputbox.send_keys('Search about French Literature')
         inputbox.send_keys(Keys.ENTER)
-        time.sleep(1)
-        self.check_for_row_in_table('2 - Search about French Literature')
-        self.fail('Finish the test')
 
         # The list is once again updated with the new item
+        self.wait_for_row_in_table('1 - Buy cigarrets')
+        self.wait_for_row_in_table('2 - Search about French Literature')
+        self.fail('Finish the test')
 
         # John notices that a unique url has been generated for
         # his to-do list and there´s a little text explaining about it
