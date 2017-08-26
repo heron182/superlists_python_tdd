@@ -1,10 +1,11 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from django.test import LiveServerTestCase
 import time
 import unittest
 
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Firefox()
 
@@ -18,7 +19,7 @@ class NewVisitorTest(unittest.TestCase):
 
     def test_can_create_a_list_and_retrieve_it(self):
         # John hears about the website and go check it up
-        self.browser.get('http://127.0.0.1:8000')
+        self.browser.get(self.live_server_url)
 
         # He notices to-do lists on its header and title
         self.assertIn('To-Do Lists', self.browser.title)
