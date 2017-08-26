@@ -19,4 +19,5 @@ from lists import views
 urlpatterns = [
     url(r'^$', views.home_page),
     url(r'^lists/newly-list/$', views.view_list, name='view_list'),
+    url(r'^lists/new$', views.new_list, name='new_list'),
 ]
