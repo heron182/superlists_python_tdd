@@ -1,0 +1,13 @@
+[Unit]
+Description=Gunicorn service for SITENAME
+
+[Service]
+Restart=on-failure
+User=USERNAME
+WorkingDirecory=/home/USERNAME/sites/USERNAME/source
+ExecStart=/home/ubuntu/sites/staging.heronrossi.com/virtualenv/bin/gunicorn \
+--bind unix:/tmp/staging.heronrossi.com.socket \
+superlists.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
