@@ -71,7 +71,7 @@ class NewListTest(TestCase):
         expected_error = escape("You can't add an empty item")
         self.assertContains(response, expected_error)
 
-    def test_empty_list_items_arent_saved(self):
+    def test_empty_list_items_for_new_list_is_not_saved(self):
         response = self.client.post('/lists/new',
                                     data={'item_text': ''})
         self.assertEqual(response.status_code, 200)
@@ -97,3 +97,11 @@ class NewListTest(TestCase):
             data={'item_text': 'A new item for the list'}
         )
         self.assertRedirects(response, '/lists/%s/' % new_list.id)
+
+    def test_validation_errors_for_existing_list_end_up_on_list_page(self):
+        list_ = List.objects.create()
+        response = self.client.post('/lists/%s/' % list_.id,
+                                    data={'item_text': ''})
+        self.assertEqual(response.status_code, 200)
+        expected_error = escape("You can't add an empty item")
+        self.assertContains(response, expected_error)

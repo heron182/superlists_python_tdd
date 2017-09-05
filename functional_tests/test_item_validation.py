@@ -39,5 +39,6 @@ class ItemValidationTest(FunctionalTest):
         inputbox = self.browser.find_element_by_id('id_new_item')
         inputbox.send_keys('Buy milk')
         inputbox.send_keys(Keys.ENTER)
-        self.wait_for_row_in_table('2 - Buy oranges')
+        self.wait_for_row_in_table('1 - Buy oranges')
+        self.wait_for_row_in_table('2 - Buy milk')
         self.browser.quit()
