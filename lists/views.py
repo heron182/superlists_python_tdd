@@ -20,7 +20,7 @@ def view_list(request, list_id):
         except ValidationError:
             error = 'You can\'t add an empty item'
         else:
-            return redirect('/lists/%s/' % list_.id)
+            return redirect(list_)
     return render(request, 'lists.html',
                   {'list': list_,
                    'error': error})
@@ -38,4 +38,4 @@ def new_list(request):
         new_list.delete()
         error = 'You can\'t add an empty item'
         return render(request, 'home.html', {'error': error})
-    return redirect('/lists/%s/' % new_list.id)
+    return redirect(new_list)

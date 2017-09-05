@@ -105,3 +105,7 @@ class NewListTest(TestCase):
         self.assertEqual(response.status_code, 200)
         expected_error = escape("You can't add an empty item")
         self.assertContains(response, expected_error)
+
+    def test_get_absolute_url(self):
+        list_ = List.objects.create()
+        self.assertEqual(list_.get_absolute_url(), '/lists/%s/' % list_.id)
