@@ -16,7 +16,13 @@
                 <div class="text-center">
                     <h1>{% block header_text %}{% endblock %}</h1>
                     <form method="POST" action="{% block form_action %}{% endblock %}">
-                        <input class="form-control input-lg" type="text" name="item_text" id="id_new_item" placeholder="Enter a to-do item"> {% csrf_token %}
+                        <input class="form-control input-lg" type="text" name="item_text" id="id_new_item" placeholder="Enter a to-do item">
+                        {% csrf_token %}
+                        {% if error %}
+                            <div class="form-group alert-danger">
+                                <span class="help-block">{{ error }}</span>
+                            </div>
+                        {% endif %}
                     </form>
                 </div>
             </div>
@@ -27,7 +33,6 @@
                 {% block table %}{% endblock %}
             </div>
         </div>
-
     </div>
 </body>
 
