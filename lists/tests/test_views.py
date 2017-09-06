@@ -13,14 +13,14 @@ class HomePageTest(TestCase):
         self.assertTemplateUsed(response, 'home.html')
 
 
-class ListViewTest(TestCase):
+class ViewListTest(TestCase):
 
     def test_uses_list_templates(self):
         list_ = List.objects.create()
         response = self.client.get('/lists/%s/' % list_.id)
         self.assertTemplateUsed(response, 'lists.html')
 
-    def test_pass_correct_view_to_template(self):
+    def test_pass_correct_list_to_template(self):
         correct_list = List.objects.create()
         other_list = List.objects.create()
         response = self.client.get('/lists/%s/' % correct_list.id)
