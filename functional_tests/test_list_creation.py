@@ -13,7 +13,7 @@ class NewVisitorTest(FunctionalTest):
         self.assertIn('To-Do List', header_text.text)
 
         # He´s promptly asked to enter a to-do item
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.browser.find_element_by_id('id_text')
         self.assertEqual(
             inputbox.get_attribute('placeholder'), 'Enter a to-do item')
 
@@ -27,7 +27,7 @@ class NewVisitorTest(FunctionalTest):
 
         # A text box is inviting him to enter another item
         # So he types "Search about French Literature"
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.browser.find_element_by_id('id_text')
         inputbox.send_keys('Search about French Literature')
         inputbox.send_keys(Keys.ENTER)
 
@@ -41,7 +41,7 @@ class NewVisitorTest(FunctionalTest):
     def test_can_create_multiple_lists_with_unique_urls(self):
         # John visits the website and start creating a new list
         self.browser.get(self.live_server_url)
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.browser.find_element_by_id('id_text')
         inputbox.send_keys('Buy fruit')
         inputbox.send_keys(Keys.ENTER)
         self.wait_for_row_in_table('1 - Buy fruit')
@@ -62,7 +62,7 @@ class NewVisitorTest(FunctionalTest):
         self.assertNotIn('1 - Buy fruit', page_text)
 
         # Emmon types a new item for  it´s list
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.browser.find_element_by_id('id_text')
         inputbox.send_keys('Do groceries')
         inputbox.send_keys(Keys.ENTER)
         self.wait_for_row_in_table('1 - Do groceries')
