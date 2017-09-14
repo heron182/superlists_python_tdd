@@ -14,14 +14,14 @@ class ItemValidationTest(FunctionalTest):
         # He get an error message saying he can´t add an empty item
         # to a list
         error = self.wait_for(
-            lambda: self.browser.find_element_by_css_selector('.alert-danger'))
-        self.assertEqual(escape(error.text),
-                         escape('You can\'t add an empty item'))
+            lambda: self.browser.find_element_by_css_selector('#id_text:invalid'))
 
         # He types a description for the item and hits enter
         # and it works as expected
         inputbox = self.browser.find_element_by_id('id_text')
         inputbox.send_keys('Buy oranges')
+        error = self.wait_for(
+        lambda: self.browser.find_element_by_css_selector('#id_text:valid'))
         inputbox.send_keys(Keys.ENTER)
         self.wait_for_row_in_table('1 - Buy oranges')
 
@@ -31,9 +31,7 @@ class ItemValidationTest(FunctionalTest):
 
         # He gets an error message again saying to correct it
         error = self.wait_for(
-            lambda: self.browser.find_element_by_css_selector('.alert-danger'))
-        self.assertEqual(escape(error.text),
-                         escape('You can\'t add an empty item'))
+            lambda: self.browser.find_element_by_css_selector('#id_text:invalid'))
 
         # He corrects it again
         inputbox = self.browser.find_element_by_id('id_text')
