@@ -3,7 +3,7 @@ from django.urls import resolve
 from django.http import HttpRequest
 from lists.views import home_page
 from lists.models import Item, List
-from lists.forms import ItemForm, EMPTY_ERROR_MSG
+from lists.forms import ItemForm, ExistingItemForm, EMPTY_ERROR_MSG, DUPLICATE_ITEM_ERROR_MSG
 from django.utils.html import escape
 
 
@@ -84,7 +84,7 @@ class ViewListTest(TestCase):
     def test_correct_form_is_rendered(self):
         list_ = List.objects.create()
         response = self.client.get('/lists/%s/' % list_.id)
-        self.assertIsInstance(response.context['form'], ItemForm)
+        self.assertIsInstance(response.context['form'], ExistingItemForm)
 
     def test_validation_errors_for_existing_list_end_up_on_list_page(self):
         list_ = List.objects.create()
@@ -106,7 +106,7 @@ class ViewListTest(TestCase):
     def test_for_invalid_input_passes_form_to_template(self):
         response = self.post_invalid_input()
         self.assertEqual(response.status_code, 200)
-        self.assertIsInstance(response.context['form'], ItemForm)
+        self.assertIsInstance(response.context['form'], ExistingItemForm)
 
     def test_for_invalid_input_show_error_msg_on_page(self):
         response = self.post_invalid_input()
@@ -117,7 +117,6 @@ class ViewListTest(TestCase):
         list_ = List.objects.create()
         self.assertEqual(list_.get_absolute_url(), '/lists/%s/' % list_.id)
 
-    @skip
     def test_duplicate_item_validation_errors_end_up_on_lists_page(self):
         list_ = List.objects.create()
         item = Item.objects.create(list=list_, text='some item')
@@ -125,7 +124,7 @@ class ViewListTest(TestCase):
                                     data={'text': 'some item'})
         self.assertTemplateUsed(response, 'lists.html')
         self.assertEqual(Item.objects.count(), 1)
-        self.assertContains(response, 'You already added that list item')
+        self.assertContains(response, DUPLICATE_ITEM_ERROR_MSG)
 
 
 class NewListTest(TestCase):

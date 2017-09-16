@@ -55,5 +55,5 @@ class ItemValidationTest(FunctionalTest):
         # A helpful error message is displayed informing he can´t add
         # a duplicated item
         error = self.wait_for(
-            lambda: self.browser.find_element_by_css_selector(".has-error"))
+            lambda: self.browser.find_element_by_css_selector(".alert-danger"))
         self.assertEqual(error.text, 'You already added that list item')

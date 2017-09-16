@@ -1,5 +1,6 @@
 from django import forms
 from lists.models import Item
+from django.core.exceptions import ValidationError
 
 EMPTY_ERROR_MSG = 'You can\'t add an empty item'
 DUPLICATE_ITEM_ERROR_MSG = 'You already added that list item'
