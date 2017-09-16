@@ -1,10 +1,15 @@
 from functional_tests.base import FunctionalTest
+from lists.forms import DUPLICATE_ITEM_ERROR_MSG
 from selenium.webdriver.common.keys import Keys
 from django.utils.html import escape
 import unittest
 
 
 class ItemValidationTest(FunctionalTest):
+
+    def get_error_element(self):
+        return self.browser.find_element_by_css_selector(
+            ".alert-danger")
 
     def test_cannot_add_empty_item_to_list(self):
         # John visits the website and submit an empty list item
@@ -55,5 +60,26 @@ class ItemValidationTest(FunctionalTest):
         # A helpful error message is displayed informing he can´t add
         # a duplicated item
         error = self.wait_for(
-            lambda: self.browser.find_element_by_css_selector(".alert-danger"))
-        self.assertEqual(error.text, 'You already added that list item')
+            lambda: self.get_error_element())
+        self.assertEqual(error.text, DUPLICATE_ITEM_ERROR_MSG)
+
+    def test_error_messages_are_cleared_on_input(self):
+        # John starts a new list and enters a duplicate item
+        self.browser.get(self.live_server_url)
+        self.get_input_box().send_keys('Make pudim')
+        self.get_input_box().send_keys(Keys.ENTER)
+        self.wait_for_row_in_table('1 - Make pudim')
+        self.get_input_box().send_keys('Make pudim')
+        self.get_input_box().send_keys(Keys.ENTER)
+        self.wait_for(
+            lambda: self.assertTrue(
+                self.get_error_element().is_displayed()
+            ))
+
+        # He starts to to correct it and the error msg immediatly
+        # disapear from the screen
+        self.get_input_box().send_keys('D')
+        self.wait_for(
+            lambda: self.assertFalse(
+                self.get_error_element().is_displayed()
+            ))
