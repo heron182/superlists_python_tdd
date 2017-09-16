@@ -117,6 +117,16 @@ class ViewListTest(TestCase):
         list_ = List.objects.create()
         self.assertEqual(list_.get_absolute_url(), '/lists/%s/' % list_.id)
 
+    @skip
+    def test_duplicate_item_validation_errors_end_up_on_lists_page(self):
+        list_ = List.objects.create()
+        item = Item.objects.create(list=list_, text='some item')
+        response = self.client.post('/lists/%s/' % list_.id,
+                                    data={'text': 'some item'})
+        self.assertTemplateUsed(response, 'lists.html')
+        self.assertEqual(Item.objects.count(), 1)
+        self.assertContains(response, 'You already added that list item')
+
 
 class NewListTest(TestCase):
 
