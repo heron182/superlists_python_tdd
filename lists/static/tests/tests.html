@@ -25,12 +25,12 @@
             assert.equal(1,1,'it works!')
         });
         QUnit.test('errors should be hidden on keypress', function(assert) {
-            initialize()
+            window.Superlists.initialize()
             $('input[name="text"]').trigger('keypress')
             assert.equal($('.alert-danger').is(':visible'), false)
         })
         QUnit.test("error aren´t hidden if there is no keypress", function(assert) {
-            initialize()
+            window.Superlists.initialize()
             assert.equal($('.alert-danger').is(':visible'), true)
         });
     </script>
