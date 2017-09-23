@@ -11,11 +11,13 @@
 
 <body>
     <div class="container">
-        
+
         <nav class="navbar navbar-default" role="navigation">
           <div class="container-fluid">
             <a class="navbar-brand" href="/">Superlists</a>
-            <form class="navbar-form navbar-right" method="POST" action="#">
+            <form class="navbar-form navbar-right"
+                  method="POST"
+                  action="{% url 'send_login_email' %}">
               <span>Enter email to log in:</span>
               <input class="form-control" name="email" type="text" />
               {% csrf_token %}
@@ -28,7 +30,8 @@
                 <div class="text-center">
                     <h1>{% block header_text %}{% endblock %}</h1>
                     <form method="POST" action="{% block form_action %}{% endblock %}">
-                        {{ form.text }} {% csrf_token %} {% if form.errors %}
+                        {{ form.text }} {% csrf_token %}
+                        {% if form.errors %}
                         <div class="form-group alert-danger">
                             <span class="help-block">{{ form.text.errors }}</span>
                         </div>
